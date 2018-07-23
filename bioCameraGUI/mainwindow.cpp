@@ -5,10 +5,13 @@
 #include<QDebug>
 #include<QLabel>
 #include<QComboBox>
+#include<QPushButton>
+#include<QDateTime>
 
 const int FRAME_COLS = 768;
 const int FRAME_ROWS = 640;
 const int FRAME_TIME = 40;
+const int THRESHOLD = 60;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -16,10 +19,20 @@ MainWindow::MainWindow(QWidget *parent) :
     m_imageGrayPic(FRAME_COLS,FRAME_ROWS,QImage::Format_RGB32),
     m_imageAccumulatedPic(FRAME_COLS,FRAME_ROWS,QImage::Format_RGB32),
     m_imageDenoisedGrayPic(FRAME_COLS,FRAME_ROWS,QImage::Format_RGB32),
-    m_imageDenoisedBinaryPic(FRAME_COLS,FRAME_ROWS,QImage::Format_RGB32)
+    m_imageDenoisedBinaryPic(FRAME_COLS,FRAME_ROWS,QImage::Format_RGB32),
+    pressed(false)
 {
     ui->setupUi(this);
     resize(800,720);
+
+    m_pstorebutton= new QPushButton("开始录制");
+    m_pstorebutton->setGeometry(20, 10, 200, 200);
+    m_pstorebutton->setStyleSheet("QPushButton {background-color: #EEEEEE; background-image: url(:/images/player_pause.png); "
+                                   "border-style: outset; border-width: 2px; border-radius: 10px; border-color: #FFFFFF;} "
+                                   "QPushButton:pressed {background: #992F6F; background-image: url(:/images/player_pause.png); }");
+    m_pstorebutton->show();
+    connect(m_pstorebutton,SIGNAL(pressed()),this,SLOT(onPressed()));
+
 
     m_pimageEventPic = &m_imageBinaryPic;
     m_pComboBox = new QComboBox(this);
@@ -32,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_pCelexSensor->openSensor("");
 
     m_pCelexSensor->setSensorMode(EventMode);
-    m_pCelexSensor->setThreshold(90);
+    m_pCelexSensor->setThreshold(THRESHOLD);
     m_pCelexSensor->setEventFrameTime(FRAME_TIME);
 
     m_pPipeOutDataTimer = new QTimer(this);
@@ -122,3 +135,20 @@ void MainWindow::onEventPicModeChanged(QString mode)
     update();
 
 }
+
+void MainWindow::onPressed()
+{
+    if(pressed){
+        m_pstorebutton->setText("停止录制");
+        const QDateTime now = QDateTime::currentDateTime();
+        const QString timestamp = now.toString(QLatin1String("yyyyMMdd_hhmmsszzz"));
+        std::string filepath  = (QCoreApplication::applicationDirPath()+"/Recording_"+timestamp+".bin").toStdString();
+        m_pCelexSensor->startRecording(filepath);}
+    else{
+        m_pstorebutton->setText("开始录制");
+        m_pCelexSensor->stopRecording();
+    }
+    pressed=!pressed;
+    update();
+}
+

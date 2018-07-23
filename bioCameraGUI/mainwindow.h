@@ -10,6 +10,7 @@ class MainWindow;
 class CelexSensorDLL;
 class QLabel;
 class QComboBox;
+class QPushButton;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -22,6 +23,7 @@ public slots:
     void onPipeoutDataTimer();
     void onDisplayTimer();
     void onEventPicModeChanged(QString);
+    void onPressed();
 
 private:
     Ui::MainWindow *ui;
@@ -50,6 +52,9 @@ private:
 
     QComboBox*          m_pComboBox;
     void                setComboBox();
+
+    QPushButton*        m_pstorebutton;
+    bool                pressed;
 };
 
 #endif // MAINWINDOW_H
