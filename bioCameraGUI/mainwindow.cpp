@@ -25,10 +25,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     resize(800,720);
 
-    m_pstorebutton= new QPushButton("开始录制",this);
-    m_pstorebutton->setGeometry(250, 10, 100, 30);
+    m_pstorebutton= new QPushButton(tr("startRecording"),this);
+    m_pstorebutton->setGeometry(250, 20, 100, 30);
     m_pstorebutton->resize(100,30);
-    m_pstorebutton->setStyleSheet("QPushButton {background-color: #EEEEEE; background-image: url(:/images/player_pause.png); "
+    m_pstorebutton->setStyleSheet("QPushButton {background-color: lightyellow; background-image: url(:/images/player_pause.png); "
                                    "border-style: outset; border-width: 2px; border-radius: 2px; border-color: #FFFFFF;} "
                                    "QPushButton:pressed {background: #992F6F; background-image: url(:/images/player_pause.png); }");
     connect(m_pstorebutton,SIGNAL(pressed()),this,SLOT(onPressed()));
@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_pimageEventPic = &m_imageBinaryPic;
     m_pComboBox = new QComboBox(this);
-    m_pComboBox->setGeometry(20,10,200,30);
+    m_pComboBox->setGeometry(20,20,200,30);
     setComboBox();
     connect(m_pComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(onEventPicModeChanged(QString)));
 
@@ -139,13 +139,13 @@ void MainWindow::onEventPicModeChanged(QString mode)
 void MainWindow::onPressed()
 {
     if(bPressed){
-        m_pstorebutton->setText("停止录制");
+        m_pstorebutton->setText("stopRecording");
         const QDateTime now = QDateTime::currentDateTime();
         const QString timestamp = now.toString(QLatin1String("yyyyMMdd_hhmmsszzz"));
         std::string filepath  = (QCoreApplication::applicationDirPath()+"/Recording_"+timestamp+".bin").toStdString();
         m_pCelexSensor->startRecording(filepath);}
     else{
-        m_pstorebutton->setText("开始录制");
+        m_pstorebutton->setText("startRecording");
         m_pCelexSensor->stopRecording();
     }
     bPressed=!bPressed;
