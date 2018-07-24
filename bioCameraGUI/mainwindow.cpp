@@ -20,17 +20,17 @@ MainWindow::MainWindow(QWidget *parent) :
     m_imageAccumulatedPic(FRAME_COLS,FRAME_ROWS,QImage::Format_RGB32),
     m_imageDenoisedGrayPic(FRAME_COLS,FRAME_ROWS,QImage::Format_RGB32),
     m_imageDenoisedBinaryPic(FRAME_COLS,FRAME_ROWS,QImage::Format_RGB32),
-    pressed(false)
+    bPressed(false)
 {
     ui->setupUi(this);
     resize(800,720);
 
-    m_pstorebutton= new QPushButton("开始录制");
-    m_pstorebutton->setGeometry(20, 10, 200, 200);
+    m_pstorebutton= new QPushButton("开始录制",this);
+    m_pstorebutton->setGeometry(250, 10, 100, 30);
+    m_pstorebutton->resize(100,30);
     m_pstorebutton->setStyleSheet("QPushButton {background-color: #EEEEEE; background-image: url(:/images/player_pause.png); "
-                                   "border-style: outset; border-width: 2px; border-radius: 10px; border-color: #FFFFFF;} "
+                                   "border-style: outset; border-width: 2px; border-radius: 2px; border-color: #FFFFFF;} "
                                    "QPushButton:pressed {background: #992F6F; background-image: url(:/images/player_pause.png); }");
-    m_pstorebutton->show();
     connect(m_pstorebutton,SIGNAL(pressed()),this,SLOT(onPressed()));
 
 
@@ -138,7 +138,7 @@ void MainWindow::onEventPicModeChanged(QString mode)
 
 void MainWindow::onPressed()
 {
-    if(pressed){
+    if(bPressed){
         m_pstorebutton->setText("停止录制");
         const QDateTime now = QDateTime::currentDateTime();
         const QString timestamp = now.toString(QLatin1String("yyyyMMdd_hhmmsszzz"));
@@ -148,7 +148,7 @@ void MainWindow::onPressed()
         m_pstorebutton->setText("开始录制");
         m_pCelexSensor->stopRecording();
     }
-    pressed=!pressed;
+    bPressed=!bPressed;
     update();
 }
 

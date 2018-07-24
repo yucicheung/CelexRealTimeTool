@@ -54,7 +54,7 @@ private:
     void                setComboBox();
 
     QPushButton*        m_pstorebutton;
-    bool                pressed;
+    bool                bPressed;
 };
 
 #endif // MAINWINDOW_H
